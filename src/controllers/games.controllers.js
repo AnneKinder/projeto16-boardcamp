@@ -21,7 +21,7 @@ export async function createGame(req, res){
     const {name, image, stockTotal, pricePerDay} = newGame
 
    try{
-    const game = await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay") VALUES (${name}, ${image}, ${stockTotal}, ${pricePerDay})`)
+    const game = await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay") VALUES ($1, $2, $3, $4)`, [name, image, stockTotal, pricePerDay])
 
     res.send(game.rows)
 
