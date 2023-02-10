@@ -1,19 +1,16 @@
-import { db } from "../database/database.connection";
+import { db } from "../database/database.connection.js";
 
 
 export async function getRentals(req, res){
 
     try{
+        const rentals = await db.query(`SELECT * FROM rentals`)
 
-        const rental = await db
-
-
+        res.send(rentals.rows)
     }
     catch(err){
         res.status(500).send(err.message)
     }
-
-
 
 }
 
