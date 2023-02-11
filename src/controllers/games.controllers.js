@@ -31,21 +31,4 @@ export async function createGame(req, res){
         console.log(err)
     }
 
-
-
-
 }
-
-// export async function getGameById(req, res){
-//     const {id} = req.params
-
-//     try{
-//         const game = await db.query(`SELECT * FROM games WHERE id=${id}`)
-//         res.send(game.rows[0])
-//     }
-//     catch(err){
-//         res.status(500).send(err.message)
-//     }
-// }
-
-
