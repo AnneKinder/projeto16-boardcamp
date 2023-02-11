@@ -40,7 +40,7 @@ export async function createCustomer(req, res){
     }
 }
 
-export async function updateCustomer(req,res){
+export async function updateCustomer(req,res){          //toFix
 
     const updatedCustomer = req.body
     const {id, name, phone, cpf, birthday} = updatedCustomer
