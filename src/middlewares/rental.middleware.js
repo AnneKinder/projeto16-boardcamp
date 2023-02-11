@@ -28,7 +28,7 @@ export async function rentalSchemaValidation(req, res, next){
               rentDate: currentDate,
               daysRented: daysRented,
               returnDate: null, 
-              originalPrice: currentGame.rows[0].pricePerDay,
+              originalPrice: currentGame.rows[0].pricePerDay*daysRented,
               delayFee: null
           
     }
