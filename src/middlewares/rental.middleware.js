@@ -18,8 +18,20 @@ export async function rentalSchemaValidation(req, res, next){
     const currentCustomer = await db.query(`SELECT * FROM customers WHERE id=$1`, [customerId])
     const currentGame = await db.query(`SELECT * FROM games WHERE id=$1`, [gameId])
     const date = new Date()
+    const currentDate = date.toISOString().split('T')[0]
 
-  const currentDate = date.toISOString().split('T')[0]
+    if (currentCustomer.rowCount=0){
+        res.status(400)
+        return
+    }
+
+    if (currentGame.rowCount=0){
+        res.status(400)
+        return
+    }
+
+    // if (currentGame.rows[0].stockTotal<=)
+
 
     const rental2={
         
