@@ -5,7 +5,7 @@ import { customerSchemaValidation } from '../middlewares/customer.middleware.js'
 const router = Router()
 
 router.get("/customers", getCustomers)
-//router.get("/customers/:id", getCustomerById)
+router.get("/customers/:id", customerSchemaValidation, getCustomerById)
 router.post("/customers",customerSchemaValidation ,createCustomer)
 
 
