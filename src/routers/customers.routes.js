@@ -1,12 +1,13 @@
 import {Router} from 'express'
-import {createCustomer, getCustomerById, getCustomers} from '../controllers/customers.controllers.js'
+import {createCustomer, getCustomerById, getCustomers, updateCustomer} from '../controllers/customers.controllers.js'
 import { customerSchemaValidation } from '../middlewares/customer.middleware.js'
 
 const router = Router()
 
 router.get("/customers", getCustomers)
-router.get("/customers/:id", customerSchemaValidation, getCustomerById)
+router.get("/customers/:id", getCustomerById)
 router.post("/customers",customerSchemaValidation ,createCustomer)
+router.put("/customers/:id", updateCustomer)
 
 
 export default router

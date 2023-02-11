@@ -37,19 +37,18 @@ export async function createCustomer(req, res){
     }
     catch(err){
         res.status(500).send(err.message)
-        console.log(err)
     }
 }
 
 export async function updateCustomer(req,res){
 
-    const updatedCustomer = res.locals.game
+    const updatedCustomer = req.body
     const {id, name, phone, cpf, birthday} = updatedCustomer
 
     try{
 
-        const costumer = await db.query(`UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5`, [name, phone, cpf, birthday,id])
-        res.status(200).send(costumer.rows)
+        const customer = await db.query(`UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5`, [name, phone, cpf, birthday,id])
+        res.status(200).send(customer.rows)
 
     }
     catch(err){
