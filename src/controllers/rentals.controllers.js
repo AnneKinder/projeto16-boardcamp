@@ -1,10 +1,10 @@
 import { db } from "../database/database.connection.js";
 
 
-export async function getRentals(req, res){
+export async function getRentals(req, res) {
 
-    try{
-         const rentals = await db.query(
+    try {
+        const rentals = await db.query(
             `
              SELECT rentals.*, json_build_object(
                
@@ -26,30 +26,47 @@ export async function getRentals(req, res){
              JOIN games
              ON rentals."gameId"=games.id;
              `)
-   
-       res.send(rentals.rows)
+
+        res.send(rentals.rows)
     }
-    catch(err){
+    catch (err) {
         res.status(500).send(err.message)
     }
 
 }
 
-export async function createRental(req, res){
+export async function createRental(req, res) {
 
-        // const newGame = req.body (busca direto da req, não recebe edição do middleware)
-        const rental2 = res.locals.rental2
-        const {customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee} = rental2
-    
+    const rental2 = res.locals.rental2
+    const { customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee } = rental2
 
-       try{
+
+    try {
         const rental = await db.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee") VALUES ($1, $2, $3, $4, $5, $6, $7)`, [customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee])
         res.status(201).send(rental.rows)
 
+    }
+    catch (err) {
+        res.status(500).send(err.message)
+        console.log(err)
+    }
+}
 
-        }
-        catch(err){
-            res.status(500).send(err.message)
-            console.log(err)
-        }
+export async function returnRental(req, res) {
+
+    const {id} = req.params
+   
+    const date = new Date()
+    const currentDate = date.toISOString().split('T')[0]
+
+    try {
+
+       const returnRental = await db.query(`UPDATE rentals SET "returnDate"=$1 WHERE id = $2;`, [currentDate, id])
+        res.status(201).send(returnRental.rows)
+      
+    }
+    catch (err) {
+        res.status(500).send(err.message)
+        console.log(err)
+    }
 }
