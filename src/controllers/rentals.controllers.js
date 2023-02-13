@@ -57,13 +57,30 @@ export async function returnRental(req, res) {
     const {id} = req.params
    
     const date = new Date()
+
     const currentDate = date.toISOString().split('T')[0]
 
     try {
+        const dayOfReturn = currentDate.slice(8,10)
+        console.log(dayOfReturn)
+        if (!id){
+            res.status(404).send("Rental doesn't exist.")
+            return
+        }
+        
+        const alreadyReturned = await db.query( `SELECT ("returnDate") FROM rentals WHERE id=$1`, [id])
+    
+        if (alreadyReturned.rows[0]!==null){
+           res.status(400).send("Product was already returned.")
+           return
+        }
 
-       const returnRental = await db.query(`UPDATE rentals SET "returnDate"=$1 WHERE id = $2;`, [currentDate, id])
+
+        const returnRental = await db.query(`UPDATE rentals SET "returnDate"=$1 WHERE id = $2;`, [currentDate, id])
         res.status(201).send(returnRental.rows)
-      
+
+  
+
     }
     catch (err) {
         res.status(500).send(err.message)

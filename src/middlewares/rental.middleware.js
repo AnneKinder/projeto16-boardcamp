@@ -30,7 +30,6 @@ export async function rentalSchemaValidation(req, res, next){
         return
     }
 
-    // if (currentGame.rows[0].stockTotal<=)
 
 
     const rental2={
