@@ -6,6 +6,8 @@ export async function customerSchemaValidation (req, res, next){
 
     const customer = req.body
 
+    const {id} = req.params
+
     const validation = customerSchema.validate(customer, {abortEarly: false})
 
     if (validation.error){
@@ -17,13 +19,16 @@ export async function customerSchemaValidation (req, res, next){
     const cpfAlreadyExists = await db.query(`SELECT * FROM customers WHERE cpf=$1`, [customer.cpf])
 
 
-    if (cpfAlreadyExists.rowCount!==0){
+    if (
+        cpfAlreadyExists.rowCount!==0 &&
+        cpfAlreadyExists.rows[0].id!==Number(id)
+        ){
         res.status(409).send("CPF already taken.")
         return
     }
 
 
-    res.locals.customer = customer
+    res.locals.customer = id ? {...customer, id} : customer 
 
     next()
 

@@ -7,7 +7,7 @@ const router = Router()
 router.get("/customers", getCustomers)
 router.get("/customers/:id", getCustomerById)
 router.post("/customers",customerSchemaValidation ,createCustomer)
-router.put("/customers/:id", updateCustomer)
+router.put("/customers/:id", customerSchemaValidation, updateCustomer)
 
 
 export default router
