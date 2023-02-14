@@ -15,20 +15,26 @@ export async function rentalSchemaValidation(req, res, next){
       return;
     }
 
-    const currentCustomer = await db.query(`SELECT * FROM customers WHERE id=$1`, [customerId])
-    const currentGame = await db.query(`SELECT * FROM games WHERE id=$1`, [gameId])
+    const customerExists = await db.query(`SELECT * FROM customers WHERE id=$1`, [customerId])
+    const gameExists = await db.query(`SELECT * FROM games WHERE id=$1`, [gameId])
+    const checkStock = await db.query( `SELECT * FROM rentals WHERE "gameId"=$1 AND "returnDate" IS NULL`, [gameId])
+
+    const rentedUnities = checkStock.rowCount
+    const allUnitiies = gameExists.rows[0].stockTotal
+
+
+    if (
+        customerExists.rowCount==0 ||
+        gameExists.rowCount==0 ||
+        rentedUnities >= allUnitiies
+        ){
+        res.status(400)
+        return
+    }
+
+
     const date = new Date()
     const currentDate = date.toISOString().split('T')[0]
-
-    if (currentCustomer.rowCount=0){
-        res.status(400)
-        return
-    }
-
-    if (currentGame.rowCount=0){
-        res.status(400)
-        return
-    }
 
 
 
