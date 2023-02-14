@@ -34,11 +34,6 @@ export async function rentalSchemaValidation(req, res, next){
     }
 
 
-    const date = new Date()
-    const currentDate = date.toISOString().split('T')[0]
-
-
-
     const rental2={
         
               customerId: customerId,
