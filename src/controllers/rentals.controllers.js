@@ -57,36 +57,53 @@ export async function createRental(req, res) {
 
 export async function returnRental(req, res) {
 
-    const { id } = req.params
+    const { returnDate, delayFee, id } = res.locals.rental
 
-    const date = new Date()
-
-    const currentDate = date.toISOString().split('T')[0]
 
     try {
-        const dayOfReturn = currentDate.slice(8, 10)
-        console.log(dayOfReturn)
-        if (!id) {
-            res.status(404).send("Rental doesn't exist.")
+
+        await db.query(
+            `UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3 `,
+            [returnDate, delayFee, id])
+
+        res.sendStatus(200)
+
+    }
+    catch (err) {
+
+        res.status(500).send(err.message)
+
+    }
+}
+
+export async function deleteRental(req, res) {
+    const { id } = req.params
+
+
+    try {
+
+        const results = await db.query(`SELECT * FROM rentals WHERE id=$1`, [id])
+
+        if(results.rowCount == 0){
+            res.sendStatus(404)
             return
         }
 
-        const alreadyReturned = await db.query(`SELECT ("returnDate") FROM rentals WHERE id=$1`, [id])
-
-        if (alreadyReturned.rows[0] !== null) {
-            res.status(400).send("Product was already returned.")
+        if(!results.rows[0].returnDate){
+            res.sendStatus(400)
             return
         }
 
-
-        const returnRental = await db.query(`UPDATE rentals SET "returnDate"=$1 WHERE id = $2;`, [currentDate, id])
-        res.status(201).send(returnRental.rows)
-
+        await db.query(`DELETE FROM rentals WHERE id=$1`, [id])
+        res.sendStatus(200)
 
 
     }
     catch (err) {
+
         res.status(500).send(err.message)
-        console.log(err)
+
     }
+
+
 }
