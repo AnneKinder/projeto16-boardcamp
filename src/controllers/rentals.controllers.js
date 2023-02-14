@@ -1,4 +1,5 @@
 import { db } from "../database/database.connection.js";
+import dayjs from 'dayjs'
 
 
 export async function getRentals(req, res) {
@@ -42,7 +43,11 @@ export async function createRental(req, res) {
 
 
     try {
-        const rental = await db.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee") VALUES ($1, $2, $3, $4, $5, $6, $7)`, [customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee])
+        const rental = await db.query(`
+        INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee") 
+        VALUES ($1, $2, $3, $4, null, $5, null)`,
+            [customerId, gameId, rentDate, daysRented, originalPrice])
+
         res.status(201).send(rental.rows)
 
     }
@@ -54,32 +59,32 @@ export async function createRental(req, res) {
 
 export async function returnRental(req, res) {
 
-    const {id} = req.params
-   
+    const { id } = req.params
+
     const date = new Date()
 
     const currentDate = date.toISOString().split('T')[0]
 
     try {
-        const dayOfReturn = currentDate.slice(8,10)
+        const dayOfReturn = currentDate.slice(8, 10)
         console.log(dayOfReturn)
-        if (!id){
+        if (!id) {
             res.status(404).send("Rental doesn't exist.")
             return
         }
-        
-        const alreadyReturned = await db.query( `SELECT ("returnDate") FROM rentals WHERE id=$1`, [id])
-    
-        if (alreadyReturned.rows[0]!==null){
-           res.status(400).send("Product was already returned.")
-           return
+
+        const alreadyReturned = await db.query(`SELECT ("returnDate") FROM rentals WHERE id=$1`, [id])
+
+        if (alreadyReturned.rows[0] !== null) {
+            res.status(400).send("Product was already returned.")
+            return
         }
 
 
         const returnRental = await db.query(`UPDATE rentals SET "returnDate"=$1 WHERE id = $2;`, [currentDate, id])
         res.status(201).send(returnRental.rows)
 
-  
+
 
     }
     catch (err) {

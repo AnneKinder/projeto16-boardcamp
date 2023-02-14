@@ -1,5 +1,6 @@
 import { rentalSchema } from "../schemas/rental.schema.js";
 import { db } from "../database/database.connection.js";
+import dayjs from "dayjs";
 
 export async function rentalSchemaValidation(req, res, next){
     const rental = req.body
@@ -42,10 +43,10 @@ export async function rentalSchemaValidation(req, res, next){
         
               customerId: customerId,
               gameId: gameId,
-              rentDate: currentDate,
+              rentDate: dayjs().format("YYYY-MM-DD"),
               daysRented: daysRented,
               returnDate: null, 
-              originalPrice: currentGame.rows[0].pricePerDay*daysRented,
+              originalPrice: gameExists.rows[0].pricePerDay*daysRented,
               delayFee: null
           
     }
