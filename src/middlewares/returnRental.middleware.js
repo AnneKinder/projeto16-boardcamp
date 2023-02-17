@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 export async function returnRentalSchemaValidation(req, res, next){
     const {id} = req.params
    
-    let rental = await db.query(` SELECT * FROM rentals WHERE id=$1 ` [id])
+    let rental = await db.query(` SELECT * FROM rentals WHERE id=$1 `, [id])
     rental =  rental.rows[0]
 
 

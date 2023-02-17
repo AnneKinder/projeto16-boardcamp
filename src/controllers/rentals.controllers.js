@@ -72,6 +72,7 @@ export async function returnRental(req, res) {
     catch (err) {
 
         res.status(500).send(err.message)
+        console.log(err.message)
 
     }
 }
@@ -84,12 +85,12 @@ export async function deleteRental(req, res) {
 
         const results = await db.query(`SELECT * FROM rentals WHERE id=$1`, [id])
 
-        if(results.rowCount == 0){
+        if (results.rowCount == 0) {
             res.sendStatus(404)
             return
         }
 
-        if(!results.rows[0].returnDate){
+        if (!results.rows[0].returnDate) {
             res.sendStatus(400)
             return
         }
